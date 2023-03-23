@@ -5,12 +5,12 @@ from typing import Optional
 
 import yaml
 import requests
-from discord import Client, Message
+from discord import Client, Message, Intents
 
 
 logging.basicConfig(level=logging.INFO)
 
-client = Client()
+client = Client(intents=Intents(message_content=True, messages=True, typing=True))
 required_config_fields = ['discord_token']
 build_code_paths = {
     'pobb.in': 'https://pobb.in/:id:/raw',
