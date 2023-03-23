@@ -1,6 +1,7 @@
 import re
 import sys
 import logging
+from pathlib import Path
 from typing import Optional
 
 import yaml
@@ -16,11 +17,12 @@ build_code_paths = {
     'pobb.in': 'https://pobb.in/:id:/raw',
     'pastebin.com': 'https://pastebin.com/raw/:id:'
 }
+ROOT = str(Path(__file__).parent)
 
 # Read config file
 logging.info("Reading configs")
 try:
-    with open('config.yaml', 'r', encoding='utf-8') as config_file:
+    with open(f'{ROOT}/config.yaml', 'r', encoding='utf-8') as config_file:
         config_dict = yaml.load(config_file, Loader=yaml.Loader)
         if any(field not in config_dict for field in required_config_fields):
             logging.error("Discord token not found in config.")
