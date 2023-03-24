@@ -34,7 +34,7 @@ except FileNotFoundError as fnf_error:
 
 
 def get_url_info(url: str) -> tuple:
-    url_r = re.compile(r'^(http(s)?:\/\/)?(www.)?(?P<url_base>\w+\.\w+)\/(?P<paste_id>\w+)')
+    url_r = re.compile(r'(http(s)?:\/\/)?(www.)?(?P<url_base>\w+\.\w+)\/(?P<paste_id>\w+)')
     url_base = url_r.search(url)
     if not url_base:
         return None, None
@@ -54,10 +54,10 @@ def get_raw_build_code(base_url: str, paste_id: str) -> Optional[str]:
     return resp.text
 
 
-def get_build_url(url: str) -> Optional[str]:
-    base_url, paste_id = get_url_info(url)
+def get_build_url(message: str) -> Optional[str]:
+    base_url, paste_id = get_url_info(message)
     if not base_url:
-        logging.warning("Bad URL parse")
+        logging.info("Message does not contain URL")
         return None
     build_code = get_raw_build_code(base_url, paste_id)
     if not build_code:
@@ -85,19 +85,9 @@ async def on_message(message: Message):
 
     logging.info("Received message '%s'", message.content)
 
-    if message.content[0] == '!':  # message is a command
-        logging.info(message.content[1:].split(' '))
-        match message.content[1:].split(' '):
-            case ['pob', url]:
-                build_url = get_build_url(url)
-                if not build_url:
-                    await message.channel.send("Error generating build URL. @w1ll#9484")
-                    return
-                await message.channel.send(get_build_url(url))
-            case ['pob', *_]:
-                await message.channel.send("Did you mean `!pob <url>`?")
-            case _:
-                await message.channel.send("Command unrecognized.")
+    url_search = get_build_url(message.content)
+    if url_search:
+        await message.channel.send(url_search)
 
 
 def main():
