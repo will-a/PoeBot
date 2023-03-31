@@ -34,7 +34,7 @@ except FileNotFoundError as fnf_error:
 
 
 def get_url_info(url: str) -> tuple:
-    url_r = re.compile(r'(http(s)?:\/\/)?(www.)?(?P<url_base>\w+\.\w+)\/(?P<paste_id>[\w\-\_]+)')
+    url_r = re.compile(r'(http(s)?:\/\/)?(www.)?(?P<url_base>\w+\.\w+)\/(?P<paste_id>[\w_-]+)')
     url_base = url_r.search(url)
     if not url_base:
         return None, None
